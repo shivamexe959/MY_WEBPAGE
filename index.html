@@ -1863,6 +1863,7 @@ label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
   <button class="tab" onclick="showTool(32)" title="Radix Sort + Counting Sort">Radix/Count</button>
   <button class="tab" onclick="showTool(33)" title="NP Theory">NP Theory</button>
   <button class="tab" role="tab" aria-selected="false" onclick="showTool(34)" title="Papers & Study Material">📚 Resources</button>
+  <button class="tab" role="tab" aria-selected="false" onclick="showTool(35);codelabInit()" title="Python & C Online Compiler">💻 Code Lab</button>
   <button class="tab btn-share-tab" role="tab" aria-selected="false" onclick="shareCurrentSolution()" title="Share your current solution via URL">🔗 Share</button>
   </div>
 </header>
@@ -3704,6 +3705,343 @@ label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
 
 </div>
 
+<!-- ═══ TOOL 35: CODE LAB ═══ -->
+<div class="tool" id="tool-codelab">
+  <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+    <button class="btn btn-pdf btn-sm" onclick="exportToolPDF(35,'Code Lab')">📄 Export PDF</button>
+  </div>
+
+  <!-- Header -->
+  <div style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(59,130,246,0.12));border:1px solid rgba(16,185,129,0.25);border-radius:16px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <div style="font-size:2rem">💻</div>
+    <div style="flex:1">
+      <div style="font-size:1.2rem;font-weight:800;background:linear-gradient(90deg,#10b981,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Code Lab</div>
+      <div style="color:#9096b0;font-size:.82rem;margin-top:3px">Write Python or C code · Run it instantly · Save your snippets</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <select id="codelab-lang" onchange="codelabChangeLang(this.value)" style="background:#0d1526;color:#e2e8f0;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;outline:none">
+        <option value="python">🐍 Python 3</option>
+        <option value="c">⚙️ C (GCC)</option>
+      </select>
+      <button onclick="codelabSaveSnippet()" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;border-radius:10px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer">💾 Save</button>
+      <button onclick="codelabRun()" id="codelab-run-btn" style="background:linear-gradient(135deg,#059669,#10b981);border:none;color:#fff;border-radius:10px;padding:7px 18px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 12px rgba(16,185,129,0.35)">▶ Run</button>
+    </div>
+  </div>
+
+  <!-- Editor Container -->
+  <div class="card" style="padding:0;overflow:hidden;border-radius:16px;border:1px solid rgba(255,255,255,0.08)">
+    <!-- Editor toolbar -->
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 14px;background:rgba(0,0,0,0.3);border-bottom:1px solid rgba(255,255,255,0.06)">
+      <span style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1px" id="codelab-filename">main.py</span>
+      <span style="flex:1"></span>
+      <button onclick="codelabClearEditor()" style="background:none;border:none;color:#64748b;font-size:11px;cursor:pointer;padding:2px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.06)">🗑 Clear</button>
+      <button onclick="codelabCopyCode()" style="background:none;border:none;color:#64748b;font-size:11px;cursor:pointer;padding:2px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.06)">📋 Copy</button>
+    </div>
+
+    <!-- Monaco Editor mounts here -->
+    <div id="codelab-editor-mount" style="height:420px;width:100%"></div>
+
+    <!-- Stdin Panel -->
+    <div style="border-top:1px solid rgba(255,255,255,0.06);padding:10px 14px;background:rgba(0,0,0,0.2)">
+      <div style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">📥 Program Input (stdin)</div>
+      <textarea id="codelab-stdin" rows="2" placeholder="Enter values your program reads from input() or scanf()... (optional)" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#e2e8f0;font-size:12px;font-family:'Courier New',monospace;padding:8px 10px;resize:vertical;outline:none;box-sizing:border-box"></textarea>
+    </div>
+
+    <!-- Output Panel -->
+    <div style="border-top:1px solid rgba(255,255,255,0.06);background:#060d1a">
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,0.05)">
+        <span style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1px">Output</span>
+        <span id="codelab-run-time" style="font-size:10px;color:#334155;margin-left:4px"></span>
+        <span style="flex:1"></span>
+        <button onclick="document.getElementById('codelab-output').textContent=''" style="background:none;border:none;color:#334155;font-size:10px;cursor:pointer">✕ Clear</button>
+      </div>
+      <pre id="codelab-output" style="margin:0;padding:14px;font-size:12.5px;font-family:'Courier New',monospace;min-height:100px;max-height:280px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;color:#e2e8f0;line-height:1.6">▶ Press Run to execute your code</pre>
+    </div>
+  </div>
+
+  <!-- Saved Snippets -->
+  <div style="margin-top:18px">
+    <div style="font-size:13px;font-weight:700;color:#94a3b8;margin-bottom:10px;display:flex;align-items:center;gap:8px">
+      📂 Saved Snippets
+      <span id="codelab-snippet-count" style="background:rgba(59,130,246,0.15);color:#60a5fa;border-radius:20px;padding:1px 8px;font-size:10px;font-weight:700">0</span>
+    </div>
+    <div id="codelab-snippets-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
+      <div style="color:#334155;font-size:12px;padding:14px;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.06);border-radius:12px;text-align:center">
+        No saved snippets yet. Write code and click 💾 Save.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// CODE LAB — Monaco Editor + Piston API + Local Save
+// ══════════════════════════════════════════════════════════════
+
+var _codelabEditor = null;
+var _codelabMonacoReady = false;
+var _codelabLang = 'python';
+
+var _codelabDefaults = {
+  python: `# 🐍 Python 3 — ADA Code Lab
+# Write, run and save your algorithm code here!
+
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+    return arr
+
+arr = [64, 34, 25, 12, 22, 11, 90]
+print("Original:", arr)
+sorted_arr = bubble_sort(arr[:])
+print("Sorted:  ", sorted_arr)
+print("Time Complexity: O(n²)  |  Space: O(1)")
+`,
+  c: `/* ⚙️  C (GCC) — ADA Code Lab */
+#include <stdio.h>
+
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j] > arr[j + 1]) {
+                int tmp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = tmp;
+            }
+}
+
+int main() {
+    int arr[] = {64, 34, 25, 12, 22, 11, 90};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Original: ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+
+    bubbleSort(arr, n);
+
+    printf("\\nSorted:   ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    printf("\\nTime: O(n^2)  Space: O(1)\\n");
+    return 0;
+}
+`
+};
+
+// Lazy-load Monaco from CDN
+function codelabInit() {
+  if (_codelabMonacoReady && _codelabEditor) return;
+  var mount = document.getElementById('codelab-editor-mount');
+  if (!mount) return;
+  if (mount.dataset.loading) return;
+  mount.dataset.loading = '1';
+  mount.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#475569;font-size:13px;gap:10px"><span style="animation:spin 1s linear infinite;display:inline-block">⚙️</span> Loading Monaco Editor...</div>';
+
+  // Inject Monaco loader script once
+  if (!window._monacoLoaderInjected) {
+    window._monacoLoaderInjected = true;
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js';
+    s.onload = function() {
+      require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+      require(['vs/editor/editor.main'], function() {
+        _codelabMonacoReady = true;
+        mount.innerHTML = '';
+        mount.dataset.loading = '';
+        _codelabEditor = monaco.editor.create(mount, {
+          value: _codelabDefaults[_codelabLang],
+          language: _codelabLang,
+          theme: 'vs-dark',
+          fontSize: 14,
+          fontFamily: "'Fira Code', 'Courier New', monospace",
+          fontLigatures: true,
+          minimap: { enabled: false },
+          scrollBeyondLastLine: false,
+          lineNumbers: 'on',
+          roundedSelection: true,
+          cursorStyle: 'line',
+          automaticLayout: true,
+          padding: { top: 12, bottom: 12 },
+          wordWrap: 'on',
+        });
+        codelabRenderSnippets();
+      });
+    };
+    s.onerror = function() {
+      mount.innerHTML = '<div style="padding:20px;color:#f87171;font-size:13px">⚠️ Failed to load Monaco Editor. Check your internet connection.</div>';
+    };
+    document.head.appendChild(s);
+  }
+}
+
+function codelabChangeLang(lang) {
+  _codelabLang = lang;
+  var filename = document.getElementById('codelab-filename');
+  if (filename) filename.textContent = lang === 'python' ? 'main.py' : 'main.c';
+  if (_codelabEditor && window.monaco) {
+    var model = _codelabEditor.getModel();
+    monaco.editor.setModelLanguage(model, lang === 'c' ? 'c' : 'python');
+    var current = _codelabEditor.getValue().trim();
+    if (!current || Object.values(_codelabDefaults).some(d => d.trim() === current)) {
+      _codelabEditor.setValue(_codelabDefaults[lang]);
+    }
+  }
+}
+
+async function codelabRun() {
+  var btn = document.getElementById('codelab-run-btn');
+  var output = document.getElementById('codelab-output');
+  var timer = document.getElementById('codelab-run-time');
+  if (!_codelabEditor) { output.style.color='#f87171'; output.textContent = '⚠️ Editor not ready. Please wait a moment and try again.'; return; }
+  var code = _codelabEditor.getValue();
+  var stdin = (document.getElementById('codelab-stdin') || {}).value || '';
+  if (!code.trim()) { output.style.color='#f87171'; output.textContent = '⚠️ Write some code first!'; return; }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Running...';
+  output.style.color = '#94a3b8';
+  output.textContent = '⏳ Executing on remote sandbox...';
+  timer.textContent = '';
+
+  var pistLang = _codelabLang === 'c' ? 'c' : 'python';
+  var pistFile = _codelabLang === 'c' ? 'main.c' : 'main.py';
+  var t0 = Date.now();
+
+  try {
+    var res = await fetch('https://emkc.org/api/v2/piston/execute', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        language: pistLang,
+        version: '*',
+        files: [{ name: pistFile, content: code }],
+        stdin: stdin
+      })
+    });
+
+    if (!res.ok) throw new Error('API returned ' + res.status);
+    var data = await res.json();
+    var elapsed = ((Date.now() - t0) / 1000).toFixed(2);
+    timer.textContent = '(' + elapsed + 's)';
+
+    var run = data.run || {};
+    var stdout = (run.stdout || '').trimEnd();
+    var stderr = (run.stderr || '').trimEnd();
+    var exitCode = run.code;
+
+    if (stderr && !stdout) {
+      output.style.color = '#f87171';
+      output.textContent = '❌ Error:\n' + stderr;
+    } else if (stderr) {
+      output.style.color = '#e2e8f0';
+      output.textContent = (stdout ? stdout + '\n\n' : '') + '⚠️ Stderr:\n' + stderr;
+    } else if (stdout) {
+      output.style.color = '#4ade80';
+      output.textContent = stdout;
+    } else {
+      output.style.color = '#94a3b8';
+      output.textContent = '(no output) — exit code ' + exitCode;
+    }
+
+    if (exitCode !== 0 && stderr) output.style.color = '#f87171';
+
+    // Award XP on successful run
+    if (exitCode === 0 && typeof awardXP === 'function') awardXP(5, 'Code Lab run');
+
+  } catch (e) {
+    output.style.color = '#f87171';
+    output.textContent = '❌ Network error: ' + e.message + '\n\nMake sure you are connected to the internet.';
+    timer.textContent = '';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '▶ Run';
+  }
+}
+
+function codelabClearEditor() {
+  if (_codelabEditor) _codelabEditor.setValue(_codelabDefaults[_codelabLang]);
+}
+
+function codelabCopyCode() {
+  if (!_codelabEditor) return;
+  navigator.clipboard.writeText(_codelabEditor.getValue()).then(function() {
+    if (typeof showToast === 'function') showToast('Code copied to clipboard!', 'success');
+  });
+}
+
+// ── Save / Load Snippets (localStorage + optional Firestore) ──
+var CODELAB_STORE_KEY = 'ada_codelab_snippets';
+
+function codelabSaveSnippet() {
+  if (!_codelabEditor) return;
+  var code = _codelabEditor.getValue().trim();
+  if (!code) return;
+  var lang = _codelabLang;
+  var title = prompt('Name this snippet (e.g. "Bubble Sort Python"):', (lang === 'python' ? 'Python' : 'C') + ' Snippet ' + (Date.now()%10000));
+  if (!title) return;
+  var snippets = codelabLoadAllSnippets();
+  snippets.unshift({ id: Date.now(), title: title.trim(), lang: lang, code: code, savedAt: new Date().toLocaleString() });
+  if (snippets.length > 20) snippets = snippets.slice(0, 20); // cap at 20
+  localStorage.setItem(CODELAB_STORE_KEY, JSON.stringify(snippets));
+  codelabRenderSnippets();
+  if (typeof showToast === 'function') showToast('💾 Snippet saved!', 'success');
+}
+
+function codelabLoadAllSnippets() {
+  try { return JSON.parse(localStorage.getItem(CODELAB_STORE_KEY) || '[]'); } catch(e) { return []; }
+}
+
+function codelabLoadSnippet(id) {
+  var snippets = codelabLoadAllSnippets();
+  var s = snippets.find(function(x) { return x.id == id; });
+  if (!s || !_codelabEditor) return;
+  _codelabLang = s.lang;
+  var sel = document.getElementById('codelab-lang');
+  if (sel) sel.value = s.lang;
+  codelabChangeLang(s.lang);
+  _codelabEditor.setValue(s.code);
+  if (typeof showToast === 'function') showToast('📂 Loaded: ' + s.title, 'info');
+}
+
+function codelabDeleteSnippet(id) {
+  var snippets = codelabLoadAllSnippets().filter(function(x) { return x.id != id; });
+  localStorage.setItem(CODELAB_STORE_KEY, JSON.stringify(snippets));
+  codelabRenderSnippets();
+}
+
+function codelabRenderSnippets() {
+  var list = document.getElementById('codelab-snippets-list');
+  var countEl = document.getElementById('codelab-snippet-count');
+  if (!list) return;
+  var snippets = codelabLoadAllSnippets();
+  if (countEl) countEl.textContent = snippets.length;
+  if (!snippets.length) {
+    list.innerHTML = '<div style="color:#334155;font-size:12px;padding:14px;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.06);border-radius:12px;text-align:center">No saved snippets yet. Write code and click 💾 Save.</div>';
+    return;
+  }
+  list.innerHTML = snippets.map(function(s) {
+    var icon = s.lang === 'python' ? '🐍' : '⚙️';
+    var color = s.lang === 'python' ? '#3b82f6' : '#10b981';
+    var preview = s.code.split('\n').slice(0,2).join('\n').substring(0, 80);
+    return '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;cursor:pointer;transition:background .2s" onmouseover="this.style.background=\'rgba(255,255,255,0.06)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.03)\'">' +
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">' +
+        '<span style="font-size:14px">' + icon + '</span>' +
+        '<span style="font-size:12px;font-weight:700;color:#e2e8f0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + s.title + '</span>' +
+        '<button onclick="codelabDeleteSnippet(' + s.id + ');event.stopPropagation()" style="background:none;border:none;color:#475569;cursor:pointer;font-size:13px;padding:0 2px" title="Delete">🗑</button>' +
+      '</div>' +
+      '<div style="font-size:10px;color:#334155;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:8px">' + preview.replace(/</g,'&lt;') + '</div>' +
+      '<div style="display:flex;align-items:center;gap:6px">' +
+        '<span style="font-size:9px;background:rgba('+color.replace('#','')+',0.1);color:' + color + ';border-radius:6px;padding:2px 7px;font-weight:700">' + (s.lang === 'python' ? 'Python 3' : 'C') + '</span>' +
+        '<span style="font-size:9px;color:#334155;flex:1">' + s.savedAt + '</span>' +
+        '<button onclick="codelabLoadSnippet(' + s.id + ')" style="background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.2);color:#60a5fa;border-radius:7px;padding:3px 10px;font-size:10px;font-weight:600;cursor:pointer">Load</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+</script>
+
 <!-- ============================================================ -->
 <!-- V2 BUSINESS MODALS -->
 <!-- ============================================================ -->
@@ -4850,6 +5188,7 @@ if (fyEl) fyEl.textContent = new Date().getFullYear();
     <button class="mob-sheet-btn" onclick="closeMobMore();showTool(12)">📊 LCS</button>
     <button class="mob-sheet-btn" onclick="closeMobMore();showTool(13)">🎒 Knapsack</button>
     <button class="mob-sheet-btn" onclick="closeMobMore();showTool(34)">📚 Resources</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(35);codelabInit()">💻 Code Lab</button>
     <button class="mob-sheet-btn" onclick="closeMobMore();showTool(33)">🏆 Leaderboard</button>
     <button class="mob-sheet-btn" onclick="closeMobMore();showTool(32)">📝 Notes</button>
   </div>
