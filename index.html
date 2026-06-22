@@ -4858,14 +4858,16 @@ if (fyEl) fyEl.textContent = new Date().getFullYear();
 <script>
 // ── Mobile Glassmorphism UI ──
 
-// Show/hide home overlay elements
+// Show/hide home overlay elements (and toggle main content)
 function _mobSetHomeView(isHome) {
   const hero   = document.getElementById('mob-hero-banner');
   const stats  = document.getElementById('mob-quick-stats');
   const cats   = document.getElementById('mob-categories');
+  const mainEl = document.querySelector('main');
   if (hero)  hero.style.display  = isHome ? 'block' : 'none';
   if (stats) stats.style.display = isHome ? 'flex'  : 'none';
   if (cats)  cats.style.display  = isHome ? 'block' : 'none';
+  if (mainEl) mainEl.style.display = isHome ? 'none' : '';
 }
 
 // Sync mobile stats chips with real app data

@@ -389,7 +389,11 @@
    MOBILE HERO BANNER — shown only on mobile home screen
    ══════════════════════════════════════════════════════════════ */
 
-#mob-hero-banner {
+/* Hidden by default on desktop */
+#mob-hero-banner,
+#mob-quick-stats,
+#mob-categories,
+#mob-aurora-bottom {
   display: none;
 }
 
