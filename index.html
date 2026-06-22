@@ -3902,57 +3902,58 @@ async function codelabRun() {
   btn.disabled = true;
   btn.textContent = '⏳ Running...';
   output.style.color = '#94a3b8';
-  output.textContent = '⏳ Executing on remote sandbox...';
+  output.textContent = '⏳ Compiling & executing...';
   timer.textContent = '';
 
-  var pistLang = _codelabLang === 'c' ? 'c' : 'python';
-  var pistFile = _codelabLang === 'c' ? 'main.c' : 'main.py';
+  // Wandbox compiler IDs
+  var compiler = _codelabLang === 'c' ? 'gcc-head' : 'cpython-3.12.0';
   var t0 = Date.now();
 
   try {
-    var res = await fetch('https://emkc.org/api/v2/piston/execute', {
+    var res = await fetch('https://wandbox.org/api/compile.json', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        language: pistLang,
-        version: '*',
-        files: [{ name: pistFile, content: code }],
-        stdin: stdin
+        compiler: compiler,
+        code: code,
+        stdin: stdin,
+        'compiler-option-raw': _codelabLang === 'c' ? '-Wall -lm' : ''
       })
     });
 
-    if (!res.ok) throw new Error('API returned ' + res.status);
+    if (!res.ok) throw new Error('Execution API returned ' + res.status + '. Try again in a moment.');
     var data = await res.json();
     var elapsed = ((Date.now() - t0) / 1000).toFixed(2);
     timer.textContent = '(' + elapsed + 's)';
 
-    var run = data.run || {};
-    var stdout = (run.stdout || '').trimEnd();
-    var stderr = (run.stderr || '').trimEnd();
-    var exitCode = run.code;
+    var progOut   = (data.program_output   || '').trimEnd();
+    var progErr   = (data.program_error    || '').trimEnd();
+    var compileOut = (data.compiler_output || '').trimEnd();
+    var status    = String(data.status || '0');
 
-    if (stderr && !stdout) {
-      output.style.color = '#f87171';
-      output.textContent = '❌ Error:\n' + stderr;
-    } else if (stderr) {
-      output.style.color = '#e2e8f0';
-      output.textContent = (stdout ? stdout + '\n\n' : '') + '⚠️ Stderr:\n' + stderr;
-    } else if (stdout) {
-      output.style.color = '#4ade80';
-      output.textContent = stdout;
-    } else {
+    // Build display
+    var parts = [];
+    if (progOut)    parts.push(progOut);
+    if (progErr)    parts.push('⚠️ Runtime error:\n' + progErr);
+    if (compileOut && status !== '0') parts.push('🔧 Compiler:\n' + compileOut);
+
+    if (parts.length === 0 && status === '0') {
       output.style.color = '#94a3b8';
-      output.textContent = '(no output) — exit code ' + exitCode;
+      output.textContent = '(program exited with no output)';
+    } else if (status !== '0' && !progOut) {
+      output.style.color = '#f87171';
+      output.textContent = parts.join('\n\n') || '❌ Compilation failed (no details)';
+    } else {
+      output.style.color = (status === '0') ? '#4ade80' : '#fbbf24';
+      output.textContent = parts.join('\n\n');
     }
 
-    if (exitCode !== 0 && stderr) output.style.color = '#f87171';
-
-    // Award XP on successful run
-    if (exitCode === 0 && typeof awardXP === 'function') awardXP(5, 'Code Lab run');
+    // Award XP on clean run
+    if (status === '0' && typeof awardXP === 'function') awardXP(5, 'Code Lab run');
 
   } catch (e) {
     output.style.color = '#f87171';
-    output.textContent = '❌ Network error: ' + e.message + '\n\nMake sure you are connected to the internet.';
+    output.textContent = '❌ ' + e.message + '\n\nCheck your internet connection and try again.';
     timer.textContent = '';
   } finally {
     btn.disabled = false;
