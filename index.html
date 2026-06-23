@@ -2077,6 +2077,7 @@ label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
       </div>
     </div>
     <div style="position:relative">
+      <div class="mob-graph-hint">👆 Tap to add node · Drag to move</div>
       <canvas id="mst-canvas" role="img" aria-label="Minimum spanning tree graph canvas"></canvas>
       <div id="mst-weight-popup">
         <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">Enter edge weight:</div>
@@ -2426,6 +2427,7 @@ label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
       <button class="btn btn-grey btn-sm mode-btn" id="bfs-mode-edge" onclick="setBFSMode('edge')">🔗 Add Edge</button>
       <button class="btn btn-grey btn-sm mode-btn" id="bfs-mode-drag" onclick="setBFSMode('drag')">✋ Drag</button>
     </div>
+    <div class="mob-graph-hint">👆 Tap to add node · Drag to move</div>
     <canvas id="bfsdfs-canvas" role="img" aria-label="BFS and DFS graph traversal canvas"></canvas>
     <div id="bfsdfs-weight-popup" style="position:absolute;background:#1e293b;border:1px solid var(--accent-blue);border-radius:12px;padding:14px;display:none;z-index:50;box-shadow:var(--glow-blue)">
       <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">Edge weight (optional):</div>
@@ -2715,6 +2717,7 @@ label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
       <button class="btn btn-grey btn-sm" onclick="djkReset()">↺ Reset</button>
     </div>
     <div style="position:relative">
+      <div class="mob-graph-hint">👆 Tap to add node · Drag to move</div>
       <canvas id="djk-canvas" role="img" aria-label="Dijkstra shortest path graph canvas"></canvas>
       <div id="djk-weight-popup" style="position:absolute;background:#1e293b;border:1px solid var(--accent-blue);border-radius:12px;padding:14px;display:none;z-index:50;box-shadow:var(--glow-blue)">
         <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">Edge weight:</div>
@@ -5453,6 +5456,57 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('orientationchange', function() {
     setTimeout(_onResize, 300); // wait for viewport to settle after rotation
   }, { passive: true });
+})();
+</script>
+
+<script>
+// ── Mobile Phase 3: canvas touch support + tuned defaults ──
+(function() {
+  function bridgeTouch(canvas) {
+    if (!canvas || canvas.dataset.touchBridged) return;
+    canvas.dataset.touchBridged = '1';
+    function fire(type, touch) {
+      canvas.dispatchEvent(new MouseEvent(type, {
+        clientX: touch.clientX, clientY: touch.clientY,
+        bubbles: true, cancelable: true, view: window
+      }));
+    }
+    canvas.addEventListener('touchstart', function(e) {
+      if (!e.touches.length) return;
+      e.preventDefault(); fire('mousedown', e.touches[0]);
+    }, { passive: false });
+    canvas.addEventListener('touchmove', function(e) {
+      if (!e.touches.length) return;
+      e.preventDefault(); fire('mousemove', e.touches[0]);
+    }, { passive: false });
+    canvas.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      fire('mouseup', e.changedTouches[0] || { clientX: 0, clientY: 0 });
+    }, { passive: false });
+  }
+
+  function initMobilePhase3() {
+    ['mst-canvas', 'bfsdfs-canvas', 'djk-canvas'].forEach(function(id) {
+      bridgeTouch(document.getElementById(id));
+    });
+    // Smaller default array size on mobile for the sorting visualizer
+    if (window.innerWidth <= 768) {
+      var sizeEl = document.getElementById('sort-size');
+      var sizeVal = document.getElementById('sort-size-val');
+      if (sizeEl && !sizeEl.dataset.mobTuned) {
+        sizeEl.dataset.mobTuned = '1';
+        sizeEl.value = 15;
+        if (sizeVal) sizeVal.textContent = '15';
+        if (typeof sortReset === 'function') { try { sortReset(); } catch (e) {} }
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobilePhase3);
+  } else {
+    initMobilePhase3();
+  }
 })();
 </script>
 

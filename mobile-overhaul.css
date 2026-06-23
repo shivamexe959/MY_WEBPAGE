@@ -283,3 +283,91 @@ html, body {
 @media (min-width: 769px) {
   #mob-drawer, #mob-drawer-overlay { display: none !important; }
 }
+
+/* ============================================
+   PHASE 3 — ALGORITHM VISUALIZERS
+   ============================================ */
+
+/* Graph hint hidden on desktop */
+.mob-graph-hint { display: none; }
+
+@media (max-width: 768px) {
+
+  /* SORTING — compact bar canvas + stacked controls */
+  #sort-canvas-container { height: 200px !important; }
+  #sort-canvas { height: 200px !important; }
+
+  /* Sorting/visualizer control columns become full width and stack */
+  .flex.flex-col { width: 100% !important; min-width: 0 !important; }
+  .flex.flex-wrap.items-center,
+  .flex.gap-12.flex-wrap { flex-direction: column !important; align-items: stretch !important; }
+
+  /* Stats badges: 2x2 grid */
+  .flex.gap-12.flex-wrap .stat-badge,
+  .stat-badge { min-width: 0 !important; }
+  .card > .flex.gap-12.flex-wrap:has(.stat-badge) {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* GRAPH canvases — fit mobile height */
+  #mst-canvas, #bfsdfs-canvas, #djk-canvas,
+  #uf-canvas, #topo-canvas, #tsp-graph-canvas {
+    height: 280px !important;
+  }
+  #bt-tree-canvas, #bt-state-canvas, #tsp-tree-canvas,
+  #heap-canvas, #recurr-canvas, #bigo-canvas { height: 240px !important; }
+
+  /* Graph interaction hint */
+  .mob-graph-hint {
+    display: block !important;
+    font-size: 11px;
+    color: var(--accent-blue, #3b82f6);
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  /* Graph mode toolbars — single scrollable row of compact buttons */
+  .mode-btn {
+    flex-shrink: 0 !important;
+    min-width: 0 !important;
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+  }
+
+  /* DP / matrix tables — compact cells + horizontal scroll wrappers */
+  .dp-table-wrapper, .lcs-table-wrapper, .table-scroll-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+  }
+  .dp-table-wrapper::before, .lcs-table-wrapper::before,
+  .table-scroll-wrapper::before {
+    content: "\2190 Scroll table \2192";
+    display: block;
+    font-size: 11px;
+    color: var(--text-secondary, #888);
+    text-align: center;
+    padding: 4px;
+  }
+  .dp-table td, .dp-table th,
+  .lcs-table td, .lcs-table th {
+    font-size: 11px !important;
+    padding: 3px 5px !important;
+    width: auto !important;
+    min-width: 26px !important;
+    height: auto !important;
+  }
+
+  /* N-Queens board centered below controls */
+  #nq-board { display: block !important; text-align: center; margin: 8px auto 0 !important; }
+  .nq-board-wrap { max-width: 100%; }
+
+  /* Heap / recurrence / tree SVG fit screen */
+  svg { width: 100% !important; }
+}
