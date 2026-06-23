@@ -441,3 +441,79 @@ html, body {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
 }
+
+/* ============================================
+   PHASE 5 — ADMIN PANEL & TEACHER CONSOLE
+   ============================================ */
+@media (max-width: 768px) {
+
+  /* ADMIN — sidebar becomes a horizontal scrolling tab strip */
+  .admin-layout { flex-direction: column !important; height: 100vh !important; }
+  .admin-sidebar {
+    width: 100% !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 4px !important;
+    padding: 8px !important;
+    border-right: none !important;
+    border-bottom: 2px solid rgba(255,255,255,0.08) !important;
+  }
+  .admin-sidebar::-webkit-scrollbar { display: none !important; }
+  .adm-brand, .adm-section-label { display: none !important; }
+  .admin-tab {
+    flex-shrink: 0 !important;
+    width: auto !important;
+    min-height: 40px !important;
+    padding: 8px 14px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+    border-radius: 6px !important;
+    border-left: none !important;
+  }
+  .admin-tab.active { border-left: none !important; background: rgba(139,92,246,0.18) !important; }
+  .admin-main { padding: 14px !important; }
+
+  /* ADMIN stat cards: 2x2 grid */
+  .admin-stats {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  .adm-stat-card, .stat-card { min-width: 0 !important; }
+
+  /* ADMIN / TEACHER data tables: horizontal scroll */
+  .admin-table-wrap, .teacher-table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* TEACHER — tab nav single scrollable row */
+  .teacher-tab-nav {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 4px !important;
+    padding: 8px 12px 0 !important;
+  }
+  .teacher-tab-nav::-webkit-scrollbar { display: none !important; }
+  .teacher-tab-btn {
+    flex-shrink: 0 !important;
+    padding: 8px 14px !important;
+    min-height: 40px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  /* TEACHER stat boxes: 2-up grid */
+  .teacher-stat-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  .teacher-stat-box { min-width: 0 !important; }
+}
