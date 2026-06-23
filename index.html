@@ -1814,6 +1814,9 @@ label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
 
 <header>
   <div class="header-top">
+    <button id="mob-hamburger" class="mob-hamburger" aria-label="Open menu" aria-expanded="false" onclick="openMobDrawer()">
+      <span></span><span></span><span></span>
+    </button>
     <div>
       <h1>⚡ ADA Algorithm Lab</h1>
       <div class="subtitle">GTU BE04000241 — Interactive Algorithm Calculators</div>
@@ -5173,6 +5176,117 @@ if (fyEl) fyEl.textContent = new Date().getFullYear();
     <span class="mob-nav-dot"></span>
   </button>
 </nav>
+
+<!-- MOBILE NAV DRAWER (slides in from left) -->
+<div id="mob-drawer-overlay" onclick="closeMobDrawer()"></div>
+<aside id="mob-drawer" aria-hidden="true">
+  <div class="mob-drawer-head">
+    <span class="mob-drawer-logo">⚡ ADA Lab</span>
+    <button class="mob-drawer-close" aria-label="Close menu" onclick="closeMobDrawer()">✕</button>
+  </div>
+  <nav class="mob-drawer-nav">
+    <div class="mob-drawer-group" data-open="true">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">📊 Sorting <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(0)">Sorting Visualizer</a>
+        <a onclick="mobDrawerGo(6)">Quick Sort</a>
+        <a onclick="mobDrawerGo(32)">Radix / Counting Sort</a>
+      </div>
+    </div>
+    <div class="mob-drawer-group">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">🌐 Graph <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(2)">MST Graph</a>
+        <a onclick="mobDrawerGo(9)">BFS / DFS</a>
+        <a onclick="mobDrawerGo(13)">Dijkstra</a>
+        <a onclick="mobDrawerGo(14)">Floyd-Warshall</a>
+        <a onclick="mobDrawerGo(17)">Graph Gallery</a>
+        <a onclick="mobDrawerGo(21)">Graph Builder</a>
+        <a onclick="mobDrawerGo(28)">Union-Find / DSU</a>
+        <a onclick="mobDrawerGo(29)">Topo Sort + SCC</a>
+      </div>
+    </div>
+    <div class="mob-drawer-group">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">🎒 DP <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(1)">0/1 Knapsack</a>
+        <a onclick="mobDrawerGo(3)">LCS</a>
+        <a onclick="mobDrawerGo(10)">Matrix Chain</a>
+        <a onclick="mobDrawerGo(11)">Coin Change</a>
+        <a onclick="mobDrawerGo(27)">SCS</a>
+      </div>
+    </div>
+    <div class="mob-drawer-group">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">⚡ Greedy <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(7)">Fractional Knapsack</a>
+        <a onclick="mobDrawerGo(8)">Activity Selection</a>
+        <a onclick="mobDrawerGo(12)">Job Scheduling</a>
+      </div>
+    </div>
+    <div class="mob-drawer-group">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">🔬 Advanced <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(4)">Binary Search</a>
+        <a onclick="mobDrawerGo(5)">Rabin-Karp</a>
+        <a onclick="mobDrawerGo(18)">N-Queens</a>
+        <a onclick="mobDrawerGo(30)">Backtracking</a>
+        <a onclick="mobDrawerGo(31)">Branch &amp; Bound TSP</a>
+        <a onclick="mobDrawerGo(25)">Heap Tree</a>
+        <a onclick="mobDrawerGo(26)">Recurrence Solver</a>
+        <a onclick="mobDrawerGo(24)">Big-O Growth</a>
+        <a onclick="mobDrawerGo(33)">NP Theory</a>
+        <a onclick="mobDrawerGo(19)">Algo Tree</a>
+        <a onclick="mobDrawerGo(23)">Step Inspector</a>
+      </div>
+    </div>
+    <div class="mob-drawer-group">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">🛠️ Tools <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(15)">PDF Export</a>
+        <a onclick="mobDrawerGo(16)">Analytics</a>
+        <a onclick="mobDrawerGo(20)">Whiteboard</a>
+        <a onclick="mobDrawerGo(22)">Exam Notes</a>
+        <a onclick="mobDrawerGo(34)">Resources</a>
+        <a onclick="mobDrawerGo(35)">Code Lab</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<script>
+// ── Mobile Nav Drawer ──
+function openMobDrawer() {
+  var d = document.getElementById('mob-drawer');
+  var o = document.getElementById('mob-drawer-overlay');
+  var h = document.getElementById('mob-hamburger');
+  if (d) { d.classList.add('open'); d.setAttribute('aria-hidden','false'); }
+  if (o) o.classList.add('open');
+  if (h) h.setAttribute('aria-expanded','true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobDrawer() {
+  var d = document.getElementById('mob-drawer');
+  var o = document.getElementById('mob-drawer-overlay');
+  var h = document.getElementById('mob-hamburger');
+  if (d) { d.classList.remove('open'); d.setAttribute('aria-hidden','true'); }
+  if (o) o.classList.remove('open');
+  if (h) h.setAttribute('aria-expanded','false');
+  document.body.style.overflow = '';
+}
+function mobToggleCat(btn) {
+  var g = btn.parentElement;
+  g.setAttribute('data-open', g.getAttribute('data-open') === 'true' ? 'false' : 'true');
+}
+function mobDrawerGo(idx) {
+  closeMobDrawer();
+  if (window.innerWidth <= 768 && typeof _mobSetHomeView === 'function') _mobSetHomeView(false);
+  document.querySelectorAll('.mob-nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (typeof showTool === 'function') showTool(idx);
+  if (idx === 35 && typeof codelabInit === 'function') codelabInit();
+  window.scrollTo(0, 0);
+}
+</script>
 
 <!-- MOBILE MORE SHEET (slides up when More is tapped) -->
 <div id="mob-more-overlay" onclick="closeMobMore()" style="display:none"></div>
