@@ -4913,7 +4913,7 @@ maintenanceMessage: 'Back in 30 mins! 🔧'</div>
   <div class="modal-box" style="max-width:500px">
     <div class="modal-header"><h2>✏️ Edit Profile</h2><button class="modal-close" onclick="closeModal('profile-edit-modal')">✕</button></div>
     <div class="modal-body">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div id="profile-edit-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div><label>Full Name</label><input id="edit-name" placeholder="Your name"/></div>
         <div><label>Phone</label><input id="edit-phone" placeholder="+91 XXXXX XXXXX"/></div>
         <div><label>College</label><input id="edit-college" placeholder="College name"/></div>
@@ -5120,6 +5120,16 @@ window._guestMode = function() {
   }
   const overlay = document.getElementById('firebase-login-overlay');
   if (overlay) overlay.style.display = 'none';
+  // On mobile: exit home view so the algorithm tool is visible
+  if (window.innerWidth <= 768 && typeof _mobSetHomeView === 'function') {
+    _mobSetHomeView(false);
+    // Set Sort as active nav button
+    const sortBtn = document.querySelector('.mob-nav-btn[data-tab="sort"]');
+    if (sortBtn) {
+      document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+      sortBtn.classList.add('active');
+    }
+  }
   if (typeof showTool === 'function') showTool(0);
 };
 
@@ -5177,21 +5187,21 @@ if (fyEl) fyEl.textContent = new Date().getFullYear();
   <div class="mob-sheet-handle"></div>
   <div class="mob-sheet-title">All Topics</div>
   <div class="mob-sheet-grid">
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(0)">⚡ Bubble Sort</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(1)">🔀 Selection Sort</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(2)">📥 Insertion Sort</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(3)">🔀 Merge Sort</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(4)">⚡ Quick Sort</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(5)">🔺 Heap Sort</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(6)">🌐 BFS / DFS</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(7)">🗺️ Dijkstra</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(8)">🌲 MST</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(12)">📊 LCS</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(13)">🎒 Knapsack</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(34)">📚 Resources</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(35);codelabInit()">💻 Code Lab</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(33)">🏆 Leaderboard</button>
-    <button class="mob-sheet-btn" onclick="closeMobMore();showTool(32)">📝 Notes</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(0)">⚡ Bubble Sort</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(1)">🔀 Selection Sort</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(2)">📥 Insertion Sort</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(3)">🔀 Merge Sort</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(4)">⚡ Quick Sort</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(5)">🔺 Heap Sort</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(6)">🌐 BFS / DFS</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(7)">🗺️ Dijkstra</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(8)">🌲 MST</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(12)">📊 LCS</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(13)">🎒 Knapsack</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(34)">📚 Resources</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(35);codelabInit()">💻 Code Lab</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(33)">🏆 Leaderboard</button>
+    <button class="mob-sheet-btn" onclick="closeMobMore(true);showTool(32)">📝 Notes</button>
   </div>
 </div>
 
@@ -5277,9 +5287,25 @@ function mobileNav(btn, tab) {
   }
 }
 
-function closeMobMore() {
+var _mobMoreItemSelected = false;
+
+function closeMobMore(toolSelected) {
+  _mobMoreItemSelected = !!toolSelected;
   document.getElementById('mob-more-overlay').style.display = 'none';
   document.getElementById('mob-more-sheet').classList.remove('open');
+  // Only switch to tool view if user actually selected a tool (not dismissed overlay)
+  if (toolSelected && window.innerWidth <= 768) {
+    _mobSetHomeView(false);
+    // Clear active state from bottom nav (More sheet items don't map to nav buttons)
+    document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+  } else if (!toolSelected) {
+    // Dismissed without selecting — restore the previously active nav button
+    var wasHome = document.querySelector('main') && document.querySelector('main').style.display === 'none';
+    if (wasHome) {
+      var homeBtn = document.querySelector('.mob-nav-btn[data-tab="home"]');
+      if (homeBtn) homeBtn.classList.add('active');
+    }
+  }
 }
 
 // On load: if mobile, show home view and sync stats
@@ -5291,6 +5317,36 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(_mobSyncStats, 4000);
   }
 });
+
+// Handle screen resize / orientation change (phone rotation)
+(function() {
+  var _lastMobile = window.innerWidth <= 768;
+  function _onResize() {
+    var isMobile = window.innerWidth <= 768;
+    if (isMobile === _lastMobile) return;
+    _lastMobile = isMobile;
+    if (!isMobile) {
+      // Switched to desktop — restore main visibility and show first tool
+      var mainEl = document.querySelector('main');
+      if (mainEl) mainEl.style.display = '';
+      var hero = document.getElementById('mob-hero-banner');
+      var stats = document.getElementById('mob-quick-stats');
+      var cats = document.getElementById('mob-categories');
+      if (hero)  hero.style.display  = '';
+      if (stats) stats.style.display = '';
+      if (cats)  cats.style.display  = '';
+    } else {
+      // Switched to mobile — check current nav state
+      var activeTab = document.querySelector('.mob-nav-btn.active');
+      var tab = activeTab ? activeTab.getAttribute('data-tab') : 'home';
+      _mobSetHomeView(tab === 'home');
+    }
+  }
+  window.addEventListener('resize', _onResize, { passive: true });
+  window.addEventListener('orientationchange', function() {
+    setTimeout(_onResize, 300); // wait for viewport to settle after rotation
+  }, { passive: true });
+})();
 </script>
 
 </body>
