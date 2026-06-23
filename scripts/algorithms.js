@@ -4314,7 +4314,8 @@ function nqReset() {
 }
 
 function _nqRenderBoard(board,tryRow,tryCol,isAttack) {
-  var n=board.length, sz=Math.min(50,Math.floor(320/n));
+  var maxBoard=(window.innerWidth<=768)?(Math.min(390,window.innerWidth)-48):320;
+  var n=board.length, sz=Math.min(50,Math.floor(maxBoard/n));
   var div=document.getElementById('nq-board');
   var html='<div class="nq-board-wrap">';
   for(var r=0;r<n;r++) {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>⚡ ADA Algorithm Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,8 +19,10 @@
 <link rel="stylesheet" href="styles/analytics.css">
 <link rel="stylesheet" href="styles/responsive.css">
 <link rel="stylesheet" href="styles/teacher.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Mobile Overhaul — must load LAST so it overrides all earlier stylesheets -->
+<link rel="stylesheet" href="mobile-overhaul.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
   --bg-dark: #0a0e1a;
@@ -1795,7 +1797,7 @@ label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
       ✅ 30+ Algorithm Visualizers &nbsp;·&nbsp; 📊 Student Dashboard &nbsp;·&nbsp; 🏆 Leaderboard
     </div>
     <button id="google-login-btn" class="google-btn" style="width:100%;margin-bottom:10px">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+      <img loading="lazy" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
       Sign in with Google
     </button>
     <button onclick="window._guestMode()" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#e8eaf6;font-size:.95rem;font-weight:600;padding:12px 20px;cursor:pointer;letter-spacing:.3px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
@@ -1812,12 +1814,15 @@ label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
 
 <header>
   <div class="header-top">
+    <button id="mob-hamburger" class="mob-hamburger" aria-label="Open menu" aria-expanded="false" onclick="openMobDrawer()">
+      <span></span><span></span><span></span>
+    </button>
     <div>
       <h1>⚡ ADA Algorithm Lab</h1>
       <div class="subtitle">GTU BE04000241 — Interactive Algorithm Calculators</div>
     </div>
     <div id="user-profile-container" class="user-profile" style="display: none;">
-      <img id="user-photo" src="" alt="Profile" class="profile-pic">
+      <img loading="lazy" id="user-photo" src="" alt="Profile" class="profile-pic">
       <div class="user-info">
         <span id="user-name" class="user-name"></span>
         <span id="user-email" class="user-email"></span>
@@ -2072,6 +2077,7 @@ label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
       </div>
     </div>
     <div style="position:relative">
+      <div class="mob-graph-hint">👆 Tap to add node · Drag to move</div>
       <canvas id="mst-canvas" role="img" aria-label="Minimum spanning tree graph canvas"></canvas>
       <div id="mst-weight-popup">
         <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">Enter edge weight:</div>
@@ -2421,6 +2427,7 @@ label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
       <button class="btn btn-grey btn-sm mode-btn" id="bfs-mode-edge" onclick="setBFSMode('edge')">🔗 Add Edge</button>
       <button class="btn btn-grey btn-sm mode-btn" id="bfs-mode-drag" onclick="setBFSMode('drag')">✋ Drag</button>
     </div>
+    <div class="mob-graph-hint">👆 Tap to add node · Drag to move</div>
     <canvas id="bfsdfs-canvas" role="img" aria-label="BFS and DFS graph traversal canvas"></canvas>
     <div id="bfsdfs-weight-popup" style="position:absolute;background:#1e293b;border:1px solid var(--accent-blue);border-radius:12px;padding:14px;display:none;z-index:50;box-shadow:var(--glow-blue)">
       <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">Edge weight (optional):</div>
@@ -2710,6 +2717,7 @@ label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
       <button class="btn btn-grey btn-sm" onclick="djkReset()">↺ Reset</button>
     </div>
     <div style="position:relative">
+      <div class="mob-graph-hint">👆 Tap to add node · Drag to move</div>
       <canvas id="djk-canvas" role="img" aria-label="Dijkstra shortest path graph canvas"></canvas>
       <div id="djk-weight-popup" style="position:absolute;background:#1e293b;border:1px solid var(--accent-blue);border-radius:12px;padding:14px;display:none;z-index:50;box-shadow:var(--glow-blue)">
         <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">Edge weight:</div>
@@ -4076,7 +4084,7 @@ function codelabRenderSnippets() {
         <div class="dash-section active" id="dash-sec-overview">
           <div class="profile-hero">
             <div class="profile-avatar-wrap">
-              <img class="profile-avatar" id="dash-avatar" src="assets/icons/avatar.svg" alt="Avatar"/>
+              <img loading="lazy" class="profile-avatar" id="dash-avatar" src="assets/icons/avatar.svg" alt="Avatar"/>
               <button class="profile-edit-btn" onclick="window._editProfile()">✏</button>
             </div>
             <div class="profile-info">
@@ -5172,6 +5180,117 @@ if (fyEl) fyEl.textContent = new Date().getFullYear();
   </button>
 </nav>
 
+<!-- MOBILE NAV DRAWER (slides in from left) -->
+<div id="mob-drawer-overlay" onclick="closeMobDrawer()"></div>
+<aside id="mob-drawer" aria-hidden="true">
+  <div class="mob-drawer-head">
+    <span class="mob-drawer-logo">⚡ ADA Lab</span>
+    <button class="mob-drawer-close" aria-label="Close menu" onclick="closeMobDrawer()">✕</button>
+  </div>
+  <nav class="mob-drawer-nav">
+    <div class="mob-drawer-group" data-open="true">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">📊 Sorting <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(0)">Sorting Visualizer</a>
+        <a onclick="mobDrawerGo(6)">Quick Sort</a>
+        <a onclick="mobDrawerGo(32)">Radix / Counting Sort</a>
+      </div>
+    </div>
+    <div class="mob-drawer-group">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">🌐 Graph <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(2)">MST Graph</a>
+        <a onclick="mobDrawerGo(9)">BFS / DFS</a>
+        <a onclick="mobDrawerGo(13)">Dijkstra</a>
+        <a onclick="mobDrawerGo(14)">Floyd-Warshall</a>
+        <a onclick="mobDrawerGo(17)">Graph Gallery</a>
+        <a onclick="mobDrawerGo(21)">Graph Builder</a>
+        <a onclick="mobDrawerGo(28)">Union-Find / DSU</a>
+        <a onclick="mobDrawerGo(29)">Topo Sort + SCC</a>
+      </div>
+    </div>
+    <div class="mob-drawer-group">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">🎒 DP <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(1)">0/1 Knapsack</a>
+        <a onclick="mobDrawerGo(3)">LCS</a>
+        <a onclick="mobDrawerGo(10)">Matrix Chain</a>
+        <a onclick="mobDrawerGo(11)">Coin Change</a>
+        <a onclick="mobDrawerGo(27)">SCS</a>
+      </div>
+    </div>
+    <div class="mob-drawer-group">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">⚡ Greedy <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(7)">Fractional Knapsack</a>
+        <a onclick="mobDrawerGo(8)">Activity Selection</a>
+        <a onclick="mobDrawerGo(12)">Job Scheduling</a>
+      </div>
+    </div>
+    <div class="mob-drawer-group">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">🔬 Advanced <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(4)">Binary Search</a>
+        <a onclick="mobDrawerGo(5)">Rabin-Karp</a>
+        <a onclick="mobDrawerGo(18)">N-Queens</a>
+        <a onclick="mobDrawerGo(30)">Backtracking</a>
+        <a onclick="mobDrawerGo(31)">Branch &amp; Bound TSP</a>
+        <a onclick="mobDrawerGo(25)">Heap Tree</a>
+        <a onclick="mobDrawerGo(26)">Recurrence Solver</a>
+        <a onclick="mobDrawerGo(24)">Big-O Growth</a>
+        <a onclick="mobDrawerGo(33)">NP Theory</a>
+        <a onclick="mobDrawerGo(19)">Algo Tree</a>
+        <a onclick="mobDrawerGo(23)">Step Inspector</a>
+      </div>
+    </div>
+    <div class="mob-drawer-group">
+      <button class="mob-drawer-cat" onclick="mobToggleCat(this)">🛠️ Tools <span class="mob-cat-chev">▾</span></button>
+      <div class="mob-drawer-links">
+        <a onclick="mobDrawerGo(15)">PDF Export</a>
+        <a onclick="mobDrawerGo(16)">Analytics</a>
+        <a onclick="mobDrawerGo(20)">Whiteboard</a>
+        <a onclick="mobDrawerGo(22)">Exam Notes</a>
+        <a onclick="mobDrawerGo(34)">Resources</a>
+        <a onclick="mobDrawerGo(35)">Code Lab</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<script>
+// ── Mobile Nav Drawer ──
+function openMobDrawer() {
+  var d = document.getElementById('mob-drawer');
+  var o = document.getElementById('mob-drawer-overlay');
+  var h = document.getElementById('mob-hamburger');
+  if (d) { d.classList.add('open'); d.setAttribute('aria-hidden','false'); }
+  if (o) o.classList.add('open');
+  if (h) h.setAttribute('aria-expanded','true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobDrawer() {
+  var d = document.getElementById('mob-drawer');
+  var o = document.getElementById('mob-drawer-overlay');
+  var h = document.getElementById('mob-hamburger');
+  if (d) { d.classList.remove('open'); d.setAttribute('aria-hidden','true'); }
+  if (o) o.classList.remove('open');
+  if (h) h.setAttribute('aria-expanded','false');
+  document.body.style.overflow = '';
+}
+function mobToggleCat(btn) {
+  var g = btn.parentElement;
+  g.setAttribute('data-open', g.getAttribute('data-open') === 'true' ? 'false' : 'true');
+}
+function mobDrawerGo(idx) {
+  closeMobDrawer();
+  if (window.innerWidth <= 768 && typeof _mobSetHomeView === 'function') _mobSetHomeView(false);
+  document.querySelectorAll('.mob-nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (typeof showTool === 'function') showTool(idx);
+  if (idx === 35 && typeof codelabInit === 'function') codelabInit();
+  window.scrollTo(0, 0);
+}
+</script>
+
 <!-- MOBILE MORE SHEET (slides up when More is tapped) -->
 <div id="mob-more-overlay" onclick="closeMobMore()" style="display:none"></div>
 <div id="mob-more-sheet">
@@ -5337,6 +5456,57 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('orientationchange', function() {
     setTimeout(_onResize, 300); // wait for viewport to settle after rotation
   }, { passive: true });
+})();
+</script>
+
+<script>
+// ── Mobile Phase 3: canvas touch support + tuned defaults ──
+(function() {
+  function bridgeTouch(canvas) {
+    if (!canvas || canvas.dataset.touchBridged) return;
+    canvas.dataset.touchBridged = '1';
+    function fire(type, touch) {
+      canvas.dispatchEvent(new MouseEvent(type, {
+        clientX: touch.clientX, clientY: touch.clientY,
+        bubbles: true, cancelable: true, view: window
+      }));
+    }
+    canvas.addEventListener('touchstart', function(e) {
+      if (!e.touches.length) return;
+      e.preventDefault(); fire('mousedown', e.touches[0]);
+    }, { passive: false });
+    canvas.addEventListener('touchmove', function(e) {
+      if (!e.touches.length) return;
+      e.preventDefault(); fire('mousemove', e.touches[0]);
+    }, { passive: false });
+    canvas.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      fire('mouseup', e.changedTouches[0] || { clientX: 0, clientY: 0 });
+    }, { passive: false });
+  }
+
+  function initMobilePhase3() {
+    ['mst-canvas', 'bfsdfs-canvas', 'djk-canvas'].forEach(function(id) {
+      bridgeTouch(document.getElementById(id));
+    });
+    // Smaller default array size on mobile for the sorting visualizer
+    if (window.innerWidth <= 768) {
+      var sizeEl = document.getElementById('sort-size');
+      var sizeVal = document.getElementById('sort-size-val');
+      if (sizeEl && !sizeEl.dataset.mobTuned) {
+        sizeEl.dataset.mobTuned = '1';
+        sizeEl.value = 15;
+        if (sizeVal) sizeVal.textContent = '15';
+        if (typeof sortReset === 'function') { try { sortReset(); } catch (e) {} }
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobilePhase3);
+  } else {
+    initMobilePhase3();
+  }
 })();
 </script>
 
