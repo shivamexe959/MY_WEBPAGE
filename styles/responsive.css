@@ -611,6 +611,7 @@
    ══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   #mob-aurora-bottom {
+    display: block !important;
     position: fixed;
     bottom: 60px;
     left: 50%;
@@ -622,4 +623,80 @@
     pointer-events: none;
     z-index: 0;
   }
+
+  /* ── iOS zoom prevention — inputs must be 16px ── */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
+  /* ── Touch-friendly button minimum size ── */
+  .btn, .btn-primary, .btn-secondary, .mob-sheet-btn,
+  .teacher-tab-btn, .admin-tab {
+    min-height: 44px;
+  }
+
+  /* ── Admin / Teacher tab nav — horizontal scroll on mobile ── */
+  .teacher-tab-nav {
+    display: flex !important;
+    overflow-x: auto !important;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 4px;
+    padding-bottom: 4px;
+  }
+  .teacher-tab-nav::-webkit-scrollbar { display: none; }
+  .teacher-tab-btn { flex-shrink: 0; }
+
+  /* Admin sidebar — already handled in admin.css, just reinforce scrollability */
+  .admin-sidebar { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .admin-sidebar::-webkit-scrollbar { display: none; }
+
+  /* ── Profile edit modal: single column on mobile ── */
+  #profile-edit-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Overflow fix for DP / matrix tables (wrap tables) ── */
+  .dp-table-wrap, [id*="dp-table"], [id*="matrix"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  /* ── All tables: ensure they scroll instead of blowing out width ── */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  /* ── Notification panel ── */
+  .notif-panel, #notif-panel-container {
+    right: 8px !important;
+    left: 8px !important;
+    width: auto !important;
+    max-width: calc(100vw - 16px) !important;
+  }
+
+  /* ── Code Lab on mobile ── */
+  #codelab-editor-mount {
+    min-height: 240px !important;
+    height: 240px !important;
+  }
+  #codelab-stdin, #codelab-output {
+    font-size: 13px !important;
+  }
+
+  /* ── Viz controls row — wrap nicely ── */
+  .viz-controls, [class*="controls-row"] {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ── Prevent elements causing horizontal scroll ── */
+  .hw-sheet { width: 100% !important; left: -200% !important; }
+  .pdf-capture-root { width: 100% !important; left: -200% !important; }
 }
