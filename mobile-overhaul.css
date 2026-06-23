@@ -582,3 +582,32 @@ html, body {
   /* Referral row wraps */
   .referral-box { flex-direction: column !important; align-items: stretch !important; }
 }
+
+/* ============================================
+   PHASE 7 — BOTTOM NAVIGATION BAR POLISH
+   ============================================ */
+@media (max-width: 768px) {
+
+  /* Guarantee the 5-tab bar renders as a flex row with thumb targets */
+  #mobile-bottom-nav { display: flex !important; align-items: stretch !important; }
+  .mob-nav-btn { min-height: 56px !important; }
+
+  /* Keep content clear of the fixed bar (incl. safe-area on notched phones) */
+  main, .content-area {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Toasts span the width safely and float above the bar */
+  .toast-container {
+    left: 12px !important;
+    right: 12px !important;
+    top: 64px !important;
+    z-index: 4200 !important;
+    align-items: stretch !important;
+  }
+  .toast-container .toast { width: 100% !important; max-width: 100% !important; }
+
+  /* Drawer, sheets and overlays always sit above the bottom nav (z 950) */
+  #mob-more-sheet, #mob-more-overlay, #mob-drawer, #mob-drawer-overlay,
+  .modal-overlay { z-index: 4000 !important; }
+}
