@@ -517,3 +517,68 @@ html, body {
   }
   .teacher-stat-box { min-width: 0 !important; }
 }
+
+/* ============================================
+   PHASE 6 — STUDENT DASHBOARD
+   ============================================ */
+@media (max-width: 768px) {
+
+  /* Dashboard: stack sidebar nav as a horizontal scrolling strip */
+  .dash-container { flex-direction: column !important; height: 100vh !important; }
+  .dash-sidebar {
+    width: 100% !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 4px !important;
+    padding: 8px !important;
+    border-right: none !important;
+    border-bottom: 2px solid rgba(255,255,255,0.08) !important;
+  }
+  .dash-sidebar::-webkit-scrollbar { display: none !important; }
+  .dash-sidebar-logo { display: none !important; }
+  .dash-sidebar > div[style*="flex:1"] { display: none !important; }
+  .dash-tab {
+    flex-shrink: 0 !important;
+    width: auto !important;
+    min-height: 40px !important;
+    padding: 8px 14px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+    border-radius: 6px !important;
+    border-left: none !important;
+  }
+  .dash-tab.active { border-left: none !important; background: rgba(59,130,246,0.18) !important; }
+  .dash-main { padding: 14px !important; }
+
+  /* Profile hero stacks vertically */
+  .profile-hero {
+    flex-direction: column !important;
+    text-align: center !important;
+    padding: 18px !important;
+    gap: 14px !important;
+  }
+  .profile-avatar-wrap { margin: 0 auto !important; }
+
+  /* Stat cards & achievements: 3-up compact grid */
+  .stats-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+  #achievements-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+  .stat-card { padding: 12px 8px !important; }
+  .stat-value { font-size: 1.1rem !important; }
+
+  /* Streak calendar centered */
+  .streak-calendar { justify-content: center !important; }
+
+  /* Leaderboard rows: show Rank + Name + XP only */
+  .lb-college, .lb-level { display: none !important; }
+  .lb-avatar { width: 32px !important; height: 32px !important; }
+
+  /* Notes editor full-width and tall enough to type */
+  .dash-main textarea, #notes-list ~ * textarea { width: 100% !important; min-height: 160px !important; }
+
+  /* Referral row wraps */
+  .referral-box { flex-direction: column !important; align-items: stretch !important; }
+}
