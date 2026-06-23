@@ -371,3 +371,73 @@ html, body {
   /* Heap / recurrence / tree SVG fit screen */
   svg { width: 100% !important; }
 }
+
+/* ============================================
+   PHASE 4 — MODALS AS BOTTOM SHEETS
+   ============================================ */
+@media (max-width: 768px) {
+
+  /* Overlays dock their content to the bottom (skip fullscreen modals) */
+  .modal-overlay:not(.modal-fullscreen) {
+    align-items: flex-end !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    background: rgba(0,0,0,0.6) !important;
+  }
+
+  /* Regular modal boxes become bottom sheets */
+  .modal-box:not(.modal-fullscreen),
+  .teacher-modal-container,
+  .teacher-student-modal-box {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 90vh !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: 20px 20px 0 0 !important;
+    margin: 0 !important;
+    padding-bottom: 30px !important;
+    animation: mobSheetUp 0.28s cubic-bezier(0.22,1,0.36,1) !important;
+  }
+
+  /* Teacher modal overlays dock to bottom too */
+  #teacher-modal.modal-open,
+  #teacher-student-modal.modal-open {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+
+  /* Drag-handle pill at the top of every sheet */
+  .modal-box:not(.modal-fullscreen)::before,
+  .teacher-modal-container::before,
+  .teacher-student-modal-box::before {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 4px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 2px;
+    margin: 10px auto 14px auto;
+    flex-shrink: 0;
+  }
+
+  /* Close buttons stay reachable at the top */
+  .modal-close, .close-teacher-modal, .close-student-modal {
+    position: sticky !important;
+    top: 6px !important;
+    margin-left: auto !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    z-index: 5 !important;
+  }
+
+  /* Profile edit two-column grid collapses */
+  #profile-edit-grid { grid-template-columns: 1fr !important; }
+}
+
+@keyframes mobSheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
